@@ -1,81 +1,57 @@
-import { getCurrentUser } from "@/lib/spotify";
+import {
+    getCurrentUser,
+    getCurrentlyPlaying,
+    getRecentlyPlayed,
+    getTopArtists,
+    getTopTracks,
+} from "@/lib/spotify";
+
+import ProfileCard from "./ProfileCard";
+import TopArtists from "./TopArtists";
+import TopTracks from "./TopTracks";
+import CurrentlyPlaying from "./CurrentlyPlaying";
+import LastPlayed from "./LastPlayed";
 
 export default async function DashboardPage() {
-    const user = await getCurrentUser();
+    const [
+        user,
+        topArtists,
+        topTracks,
+        currentlyPlaying,
+        recentlyPlayed,
+    ] = await Promise.all([
+        getCurrentUser(),
+        getTopArtists(),
+        getTopTracks(),
+        getCurrentlyPlaying(),
+        getRecentlyPlayed(),
+    ]);
 
     return (
-        <main className="min-h-screen bg-zinc-950 text-white p-8">
-            <div className="max-w-6xl mx-auto">
+        <main className="min-h-screen bg-zinc-950 text-white">
+            <div className="mx-auto max-w-7xl p-8 space-y-8">
                 <ProfileCard user={user} />
-            </div>
-        </main>
-    );
-}
 
-function ProfileCard({ user }: any) {
-    return (
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
-            <div className="flex items-center gap-6">
-                <img
-                    src={
-                        user.images?.[0]?.url ??
-                        "https://placehold.co/300"
-                    }
-                    alt={user.display_name}
-                    className="w-32 h-32 rounded-full"
-                />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 space-y-6">
+                        <TopArtists artists={topArtists.items} />
 
-                <div>
-                    <h1 className="text-4xl font-bold">
-                        {user.display_name}
-                    </h1>
+                        <TopTracks tracks={topTracks.items} />
+                    </div>
 
-                    <p className="text-zinc-400 mt-2">
-                        {user.email}
-                    </p>
-
-                    <div className="flex gap-3 mt-4">
-                        <StatCard
-                            label="Followers"
-                            value={user.followers?.total ?? 0}
-                        />
-
-                        <StatCard
-                            label="Country"
-                            value={user.country}
-                        />
-
-                        <StatCard
-                            label="Plan"
-                            value={
-                                user.product === "premium"
-                                    ? "Premium"
-                                    : "Free"
-                            }
-                        />
+                    <div>
+                        {currentlyPlaying ? (
+                            <CurrentlyPlaying
+                                track={currentlyPlaying}
+                            />
+                        ) : (
+                            <LastPlayed
+                                track={recentlyPlayed.items[0]}
+                            />
+                        )}
                     </div>
                 </div>
             </div>
-        </div>
-    );
-}
-
-function StatCard({
-    label,
-    value,
-}: {
-    label: string;
-    value: string | number;
-}) {
-    return (
-        <div className="bg-zinc-800 px-4 py-3 rounded-xl">
-            <div className="text-sm text-zinc-400">
-                {label}
-            </div>
-
-            <div className="font-semibold">
-                {value}
-            </div>
-        </div>
+        </main>
     );
 }
