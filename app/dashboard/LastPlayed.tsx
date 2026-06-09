@@ -1,56 +1,57 @@
 import { formatDistanceToNow } from "date-fns";
 
-type LastPlayedProps = {
-    track: {
-        played_at: string;
-        track: {
-            name: string;
-            artists: {
-                name: string;
-            }[];
-            album: {
-                images: {
-                    url: string;
-                }[];
-            };
-        };
-    };
+type Props = {
+    track: any;
 };
 
 export default function LastPlayed({
     track,
-}: LastPlayedProps) {
+}: Props) {
+    const song = track.track;
+
     return (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-            <h2 className="mb-4 text-xl font-semibold">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+            <h2 className="mb-6 text-2xl font-bold">
                 🕒 Last Played
             </h2>
 
             <img
-                src={track.track.album.images?.[0]?.url}
-                alt={track.track.name}
-                className="mb-4 w-full rounded-lg"
+                src={
+                    song.album.images?.[0]
+                        ?.url
+                }
+                alt={song.name}
+                className="aspect-square w-full rounded-3xl object-cover shadow-2xl"
             />
 
-            <h3 className="font-bold text-lg">
-                {track.track.name}
-            </h3>
+            <div className="mt-6">
+                <h3 className="text-2xl font-bold">
+                    {song.name}
+                </h3>
 
-            <p className="text-zinc-400">
-                {track.track.artists
-                    .map((artist) => artist.name)
-                    .join(", ")}
-            </p>
+                <p className="mt-2 text-zinc-400">
+                    {song.artists
+                        .map(
+                            (
+                                artist: any,
+                            ) =>
+                                artist.name,
+                        )
+                        .join(", ")}
+                </p>
 
-            <p className="mt-4 text-sm text-zinc-500">
-                Played{" "}
-                {formatDistanceToNow(
-                    new Date(track.played_at),
-                    {
-                        addSuffix: true,
-                    }
-                )}
-            </p>
+                <p className="mt-6 text-sm text-zinc-500">
+                    Played{" "}
+                    {formatDistanceToNow(
+                        new Date(
+                            track.played_at,
+                        ),
+                        {
+                            addSuffix: true,
+                        },
+                    )}
+                </p>
+            </div>
         </div>
     );
 }

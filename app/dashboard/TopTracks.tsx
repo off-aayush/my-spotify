@@ -11,16 +11,14 @@ type Track = {
     }[];
 };
 
-type TopTracksProps = {
-    tracks: Track[];
-};
-
 export default function TopTracks({
     tracks,
-}: TopTracksProps) {
+}: {
+    tracks: Track[];
+}) {
     return (
-        <div className="rounded-xl border p-5">
-            <h2 className="mb-4 text-xl font-semibold">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6">
+            <h2 className="mb-6 text-2xl font-bold">
                 🎵 Top Tracks
             </h2>
 
@@ -28,27 +26,30 @@ export default function TopTracks({
                 {tracks.map((track, index) => (
                     <div
                         key={track.id}
-                        className="flex items-center gap-3"
+                        className="group flex items-center gap-4 rounded-2xl p-3 transition-all hover:bg-zinc-800"
                     >
-                        <span className="font-bold text-muted-foreground">
-                            #{index + 1}
-                        </span>
+                        <div className="relative">
+                            <img
+                                src={
+                                    track.album
+                                        .images?.[0]
+                                        ?.url
+                                }
+                                alt={track.name}
+                                className="h-16 w-16 rounded-xl object-cover"
+                            />
 
-                        <img
-                            src={
-                                track.album.images?.[0]
-                                    ?.url
-                            }
-                            alt={track.name}
-                            className="h-12 w-12 rounded-md"
-                        />
+                            <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-xs font-bold text-black">
+                                {index + 1}
+                            </div>
+                        </div>
 
                         <div>
-                            <p className="font-medium">
+                            <h3 className="font-semibold group-hover:text-green-400">
                                 {track.name}
-                            </p>
+                            </h3>
 
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-zinc-400">
                                 {track.artists
                                     .map(
                                         (
