@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     const scopes = [
+        // Just discovered Scopes, and these are really helpful to access multiple data about the user
+        "user-read-private", // Gets me my Country code and subscription tier
         "user-read-email",
         "user-top-read",
         "user-read-recently-played",
