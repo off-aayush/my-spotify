@@ -3,11 +3,32 @@ import { getValidAccessToken } from "./token-manager";
 export async function spotifyFetch(endpoint: string) {
     const token = await getValidAccessToken();
 
-    const response = await fetch(`https://api.spotify.com/v1${endpoint}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const response = await fetch(
+        `https://api.spotify.com/v1${endpoint}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            cache: "no-store",
+        }
+    );
+
+    // Spotify often returns 204
+    if (response.status === 204) {
+        return null;
+    }
+
+    if (!response.ok) {
+        const text = await response.text();
+
+        console.error(
+            `Spotify API Error: ${endpoint}`,
+            response.status,
+            text
+        );
+
+        return null;
+    }
 
     return response.json();
 }
@@ -38,7 +59,7 @@ export async function getCurrentlyPlaying() {
                 Authorization: `Bearer ${token}`,
             },
             cache: "no-store",
-        }
+        },
     );
 
     if (response.status === 204) {
@@ -114,4 +135,8 @@ export async function getTopSavedArtists(topN = 8) {
         }))
         .sort((a, b) => b.tracks - a.tracks)
         .slice(0, topN);
+}
+
+export async function getPlayerState() {
+    return spotifyFetch("/me/player");
 }

@@ -19,6 +19,8 @@ export default function NowPlayingPanel({
     currentlyPlaying: initialCurrent,
     lastPlayed: initialLast,
 }: Props) {
+    const [device, setDevice] = useState<any>(null);
+
     const [currentlyPlaying, setCurrentlyPlaying] = useState(initialCurrent);
 
     const [lastPlayed, setLastPlayed] = useState(initialLast);
@@ -63,6 +65,8 @@ export default function NowPlayingPanel({
                 });
 
                 const data = await response.json();
+
+                setDevice(data.device);
 
                 setCurrentlyPlaying(data.currentlyPlaying);
 
@@ -128,6 +132,35 @@ export default function NowPlayingPanel({
                     {artists?.map((a: any) => a.name).join(", ")}
                 </p>
             </div>
+
+            {device && (
+                <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-950 p-3">
+                    <p className="text-xs uppercase tracking-wider text-zinc-500">
+                        Playing On
+                    </p>
+
+                    <div className="mt-2 flex items-center justify-between">
+                        <div>
+                            <p className="font-medium">{device.name}</p>
+
+                            <p className="text-xs text-zinc-500">
+                                {device.type}
+                            </p>
+                        </div>
+
+                        <div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
+                    </div>
+                </div>
+                // <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-950 px-3 py-1.5">
+                //     <div className="h-2 w-2 rounded-full bg-green-500" />
+
+                //     <span className="text-xs text-zinc-300">{device.name}</span>
+
+                //     <span className="text-xs text-zinc-500">
+                //         • {device.type}
+                //     </span>
+                // </div>
+            )}
 
             {currentlyPlaying ? (
                 <div className="mt-6">
