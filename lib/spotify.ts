@@ -17,21 +17,15 @@ export async function getCurrentUser() {
 }
 
 export async function getTopArtists() {
-    return spotifyFetch(
-        "/me/top/artists?limit=5&time_range=medium_term"
-    );
+    return spotifyFetch("/me/top/artists?limit=5&time_range=medium_term");
 }
 
 export async function getTopTracks() {
-    return spotifyFetch(
-        "/me/top/tracks?limit=5&time_range=medium_term"
-    );
+    return spotifyFetch("/me/top/tracks?limit=5&time_range=medium_term");
 }
 
 export async function getRecentlyPlayed() {
-    return spotifyFetch(
-        "/me/player/recently-played?limit=1"
-    );
+    return spotifyFetch("/me/player/recently-played?limit=1");
 }
 
 export async function getCurrentlyPlaying() {
@@ -44,7 +38,7 @@ export async function getCurrentlyPlaying() {
                 Authorization: `Bearer ${token}`,
             },
             cache: "no-store",
-        }
+        },
     );
 
     if (response.status === 204) {
@@ -56,4 +50,18 @@ export async function getCurrentlyPlaying() {
     }
 
     return response.json();
+}
+
+export async function getArtist(artistId: string) {
+    return spotifyFetch(`/artists/${artistId}`);
+}
+
+export async function getTopArtistsWithDetails() {
+    const topArtists = await getTopArtists();
+
+    const artists = await Promise.all(
+        topArtists.items.map((artist: any) => getArtist(artist.id)),
+    );
+
+    return artists;
 }
