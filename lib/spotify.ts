@@ -38,7 +38,7 @@ export async function getCurrentlyPlaying() {
                 Authorization: `Bearer ${token}`,
             },
             cache: "no-store",
-        },
+        }
     );
 
     if (response.status === 204) {
@@ -67,9 +67,7 @@ export async function getTopArtistsWithDetails() {
 }
 
 export async function getSavedTracks(limit = 50, offset = 0) {
-    return spotifyFetch(
-        `/me/tracks?limit=${limit}&offset=${offset}`
-    );
+    return spotifyFetch(`/me/tracks?limit=${limit}&offset=${offset}`);
 }
 
 export async function getAllSavedTracks() {
@@ -98,7 +96,6 @@ export async function getAllSavedTracks() {
     return allTracks;
 }
 
-
 export async function getTopSavedArtists(topN = 8) {
     const tracks = await getAllSavedTracks();
 
@@ -106,8 +103,7 @@ export async function getTopSavedArtists(topN = 8) {
 
     tracks.forEach((item) => {
         item.track.artists.forEach((artist: any) => {
-            artistCounts[artist.name] =
-                (artistCounts[artist.name] || 0) + 1;
+            artistCounts[artist.name] = (artistCounts[artist.name] || 0) + 1;
         });
     });
 
