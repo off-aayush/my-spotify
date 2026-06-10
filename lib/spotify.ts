@@ -65,3 +65,57 @@ export async function getTopArtistsWithDetails() {
 
     return artists;
 }
+
+export async function getSavedTracks(limit = 50, offset = 0) {
+    return spotifyFetch(
+        `/me/tracks?limit=${limit}&offset=${offset}`
+    );
+}
+
+export async function getAllSavedTracks() {
+    const allTracks: any[] = [];
+
+    let offset = 0;
+    const limit = 50;
+
+    while (true) {
+        const data = await getSavedTracks(limit, offset);
+
+        allTracks.push(...data.items);
+
+        if (data.items.length < limit) {
+            break;
+        }
+
+        offset += limit;
+
+        // optional safety cap
+        if (offset >= 500) {
+            break;
+        }
+    }
+
+    return allTracks;
+}
+
+
+export async function getTopSavedArtists(topN = 8) {
+    const tracks = await getAllSavedTracks();
+
+    const artistCounts: Record<string, number> = {};
+
+    tracks.forEach((item) => {
+        item.track.artists.forEach((artist: any) => {
+            artistCounts[artist.name] =
+                (artistCounts[artist.name] || 0) + 1;
+        });
+    });
+
+    return Object.entries(artistCounts)
+        .map(([artist, tracks]) => ({
+            artist,
+            tracks,
+        }))
+        .sort((a, b) => b.tracks - a.tracks)
+        .slice(0, topN);
+}

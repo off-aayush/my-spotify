@@ -8,6 +8,7 @@ export async function GET() {
         "user-top-read",
         "user-read-recently-played",
         "user-read-currently-playing",
+        "user-library-read",
     ];
 
     const params = new URLSearchParams({
